@@ -1,0 +1,16 @@
+#!/bin/bash
+day=$(date +%Y-%m-%d)
+now=$(date '+%Y-%m-%d %H:%M:%S')
+echo -e "$1\t>> $now : ${@:2}" >> log-$day
+last=$(tail -2 log-$day | head -1)
+order=$(echo $last | cut -d ' ' -f 1)
+if [ "$1" == "stop" ]
+then
+  startTime=$(echo $last | cut -d ' ' -f 4)
+  stE=$(date +%s -d ${startTime})
+  endTime=$(echo $now | cut -d ' ' -f 2)
+  etE=$(date +%s -d ${endTime})
+  elapsed=`expr ${etE} - ${stE}`
+  echo "Worked: `date +%H:%M:%S -ud @${elapsed}`" >> log-$day
+  echo "Worked: `date +%H:%M:%S -ud @${elapsed}`"
+fi
