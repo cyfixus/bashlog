@@ -27,6 +27,35 @@ elapsed () {
   fi
 }
 
+worked () {
+  totalWorked=0
+  while IFS="" read -r line || [ -n "$line" ]
+  do
+    lineCommand=$(echo $line | cut -d ' ' -f 1)
+    if [ "$lineCommand" == "Worked:" ]
+    then
+      workedTime=$(echo $line | cut -d ' ' -f 2)
+      hr=$(echo $workedTime | cut -d ':' -f 1)
+      hr=$(($hr*3600))
+      min=$(echo $workedTime | cut -d ':' -f 2)
+      min=$(($min*60))
+      sec=$(echo $workedTime | cut -d ':' -f 3)
+      sec=${sec%.*}
+      et=`expr ${hr} + ${min} + ${sec}` 
+      totalWorked=`expr ${totalWorked} + ${et}`
+    fi
+  done < log-$day.txt
+  totalWorked=`expr ${totalWorked}`
+  totalHours=`expr ${totalWorked} / 60 / 60 % 24`
+  totalMinutes=`expr ${totalWorked} / 60 % 60`
+  totalSeconds=`expr ${totalWorked} % 60`
+  echo "Worked: ${totalHours}h ${totalMinutes}m ${totalSeconds}s"
+  if [ "$1" == "end" ]
+  then
+    echo "Worked: ${totalHours}h ${totalMinutes}m ${totalSeconds}s" >> log-$day.txt
+  fi
+}
+
 day=$(date +%Y-%m-%d)
 now=$(date '+%Y-%m-%d %H:%M:%S')
 last=$(tail -1 log-$day.txt | head -1)
@@ -43,4 +72,12 @@ fi
 if [ "$1" == "check" ]
 then 
   elapsed "check"
+fi
+if [ "$1" == "worked" ]
+then
+  worked
+fi
+if [ "$1" == "end" ]
+then
+  worked "end"
 fi
