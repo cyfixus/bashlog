@@ -7,7 +7,12 @@ enable the file to be executed
 chmod u+x log
 ```
 
-execute the file with the first argument being 'start', 'stop', or 'check'
+execute the file with the first argument being 'start', 'stop', 'check', 'worked', or 'end'
+start begins the log
+stop stops the log
+check reports the elapsed time from a start
+worked reports the total worked time for the day
+end closes the day appending the total worked time to the file
 ```
 ./log start developing log readme
 start   >> 2019-06-03 22:09:17 : developing readme
@@ -19,6 +24,8 @@ Worked: 00:00:06
 $ ./log stop developing readme
 stop    >> 2019-06-03 22:11:04 : developing readme
 Worked: 00:00:26
+
+
 ```
 the script looks for the 'stop' or 'check' string and then calculates the time difference from the last logged entry
 the log is saved to a file named 'log-YYYY-MM-DD'
